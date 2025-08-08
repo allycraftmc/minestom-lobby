@@ -12,6 +12,8 @@ import java.util.List;
 public class BlockHandlers {
     public static void register(@NotNull BlockManager blockManager) {
         blockManager.registerHandler(Sign.KEY, Sign::new);
+        blockManager.registerHandler(Bed.KEY, Bed::new);
+        blockManager.registerHandler(Chest.KEY, Chest::new);
     }
 
     public static class Sign implements BlockHandler {
@@ -28,6 +30,24 @@ public class BlockHandlers {
                     Tag.NBT("front_text"),
                     Tag.NBT("back_text")
             );
+        }
+    }
+
+    public static class Bed implements BlockHandler {
+        public static final Key KEY = Key.key("minecraft", "bed");
+
+        @Override
+        public @NotNull Key getKey() {
+            return KEY;
+        }
+    }
+
+    public static class Chest implements BlockHandler {
+        public static final Key KEY = Key.key("minecraft", "chest");
+
+        @Override
+        public @NotNull Key getKey() {
+            return KEY;
         }
     }
 }

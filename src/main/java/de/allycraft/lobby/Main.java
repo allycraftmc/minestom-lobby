@@ -84,7 +84,11 @@ public class Main {
 
         GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
 
-        new PortalHook(config).register(eventHandler);
+        if(config.authMode() == LobbyConfig.AuthMode.VELOCITY) {
+            new PortalHook(config).register(eventHandler);
+        } else {
+            LOGGER.info("Portals are disabled in non-velocity auth modes");
+        }
         new LobbyGuardHook().register(eventHandler);
         new GamemodeHook(luckPerms).register(eventHandler);
         new OutOfWorldHook(instanceContainer, config.spawnPosition()).register(eventHandler);
