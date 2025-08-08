@@ -5,6 +5,7 @@ import com.electronwill.nightconfig.core.file.FileConfig;
 import net.minestom.server.coordinate.BlockVec;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.util.List;
 public record LobbyConfig(
         @NotNull Pos spawnPosition,
         List<@NotNull Portal> portals,
+        List<@NotNull MapConfig> maps,
         @NotNull AuthMode authMode,
         @NotNull String host,
         int port
@@ -40,6 +42,27 @@ public record LobbyConfig(
                     })
                     .toList();
 
+            List<Config> mapConfigs = fileConfig.getOrElse("lobby.maps", List.of());
+            List<MapConfig> maps = mapConfigs.stream()
+                    .map(conf -> {
+                        String image = conf.get("image");
+                        Pos pos = readPositionOrElse(conf, "pos", Pos.ZERO);
+                        Direction direction = switch (conf.getOrElse("direction", "north").toLowerCase()) {
+                            case "north" -> Direction.NORTH;
+                            case "south" -> Direction.SOUTH;
+                            case "west" -> Direction.WEST;
+                            case "east" -> Direction.EAST;
+                            case "up" -> Direction.UP;
+                            case "down" -> Direction.DOWN;
+                            case String value -> {
+                                LOGGER.error("Unexpected value for map direction: {} (fallback: north)", value);
+                                yield Direction.NORTH;
+                            }
+                        };
+                        return new MapConfig(image, pos, direction);
+                    })
+                    .toList();
+
             AuthMode authMode = switch (fileConfig.getOrElse("server.auth_mode", "online").toLowerCase()) {
                 case "offline" -> AuthMode.OFFLINE;
                 case "online" -> AuthMode.ONLINE;
@@ -52,8 +75,7 @@ public record LobbyConfig(
             String host = fileConfig.getOrElse("server.host", "0.0.0.0");
             int port = fileConfig.getOrElse("server.port", 25565);
 
-
-            return new LobbyConfig(spawnPosition, portals, authMode, host, port);
+            return new LobbyConfig(spawnPosition, portals, maps, authMode, host, port);
         }
     }
 
@@ -94,6 +116,14 @@ public record LobbyConfig(
             return min.blockX() <= pos.blockX() && min.blockY() <= pos.blockY() && min.blockZ() <= pos.blockZ()
                     && pos.blockX() <= max.blockX() && pos.blockY() <= max.blockY() && pos.blockZ() <= max.blockZ();
         }
+    }
+
+    public record MapConfig(
+            @NotNull String image,
+            @NotNull Pos pos,
+            @NotNull Direction direction
+    ) {
+
     }
 
     public enum AuthMode {

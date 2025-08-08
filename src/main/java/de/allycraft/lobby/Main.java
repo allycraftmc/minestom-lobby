@@ -3,11 +3,10 @@ package de.allycraft.lobby;
 import de.allycraft.lobby.command.GamemodeCommand;
 import de.allycraft.lobby.command.StopCommand;
 import de.allycraft.lobby.config.LobbyConfig;
-import de.allycraft.lobby.hooks.GamemodeHook;
-import de.allycraft.lobby.hooks.LobbyGuardHook;
-import de.allycraft.lobby.hooks.PortalHook;
-import de.allycraft.lobby.hooks.OutOfWorldHook;
+import de.allycraft.lobby.hooks.*;
 import de.allycraft.lobby.luckperms.HoconConfigurationAdapter;
+import de.allycraft.lobby.utils.LargeMapDisplay;
+import de.allycraft.lobby.utils.MapIdManager;
 import de.allycraft.lobby.utils.PermissionUtils;
 import me.lucko.luckperms.minestom.CommandRegistry;
 import me.lucko.luckperms.minestom.LuckPermsMinestom;
@@ -70,12 +69,26 @@ public class Main {
         instanceContainer.setTime(6000);
         instanceContainer.setTimeRate(0);
 
+        MapIdManager mapIdManager = new MapIdManager();
+
+        for(LobbyConfig.MapConfig mapConfig : config.maps()) {
+            LargeMapDisplay map = LargeMapDisplay.fromImage(mapIdManager, Path.of(mapConfig.image()));
+            map.spawn(instanceContainer, mapConfig.pos(), mapConfig.direction());
+
+            MinecraftServer.getGlobalEventHandler().addListener(PlayerSpawnEvent.class, event -> {
+                if(event.isFirstSpawn()) {
+                    map.sendPackets(event.getPlayer());
+                }
+            });
+        }
+
         GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
 
         new PortalHook(config).register(eventHandler);
         new LobbyGuardHook().register(eventHandler);
         new GamemodeHook(luckPerms).register(eventHandler);
         new OutOfWorldHook(instanceContainer, config.spawnPosition()).register(eventHandler);
+        new MapDisplayHook(instanceContainer, config.maps(), mapIdManager).register(eventHandler);
 
         eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
             Player player = event.getPlayer();
