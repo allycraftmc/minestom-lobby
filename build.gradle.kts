@@ -30,6 +30,7 @@ dependencies {
 
     // LuckPerms
     implementation("dev.lu15:luckperms-minestom:5.5-SNAPSHOT")
+    implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("org.spongepowered:configurate-hocon:3.7.3")
     implementation("com.h2database:h2:2.1.214")
     implementation("redis.clients:jedis:5.2.0")
