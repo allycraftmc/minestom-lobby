@@ -1,0 +1,12 @@
+[lobby]
+spawn_pos = { x = 0.5, y = 1, z = 0.5}
+
+[[lobby.portals]]
+destination = "server"
+corner1 = { x = 1, y = 2, z = 3 }
+corner2 = { x = 4, y = 5, z = 6 }
+
+[server]
+auth_mode = "online"
+host = "0.0.0.0"
+port = 25565
