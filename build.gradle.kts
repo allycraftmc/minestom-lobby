@@ -41,6 +41,8 @@ tasks {
         manifest {
             attributes["Main-Class"] = "de.allycraft.lobby.Main"
         }
+
+        archiveVersion.set("")
     }
 
     build {
@@ -50,6 +52,7 @@ tasks {
     shadowJar {
         mergeServiceFiles()
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        archiveVersion.set("")
     }
 
     run.configure {
