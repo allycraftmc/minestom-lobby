@@ -20,6 +20,7 @@ java {
 repositories {
     mavenCentral()
     maven("https://repo.hypera.dev/snapshots/") // LuckPerms Minestom
+    maven("https://repo.lucko.me/") // Spark
 }
 
 dependencies {
@@ -35,6 +36,9 @@ dependencies {
     implementation("com.h2database:h2:2.1.214")
     implementation("redis.clients:jedis:5.2.0")
     implementation("org.postgresql:postgresql:42.7.6")
+
+    // Spark
+    implementation("me.lucko:spark-common:1.10.142-SNAPSHOT")
 }
 
 tasks {

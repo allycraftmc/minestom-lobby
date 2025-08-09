@@ -5,7 +5,7 @@ import de.allycraft.lobby.command.StopCommand;
 import de.allycraft.lobby.config.LobbyConfig;
 import de.allycraft.lobby.modules.*;
 import de.allycraft.lobby.luckperms.HoconConfigurationAdapter;
-import de.allycraft.lobby.utils.LargeMapDisplay;
+import de.allycraft.lobby.spark.SparkMinestom;
 import de.allycraft.lobby.utils.MapIdManager;
 import de.allycraft.lobby.utils.PermissionUtils;
 import me.lucko.luckperms.minestom.CommandRegistry;
@@ -53,6 +53,10 @@ public class Main {
                 .commandRegistry(CommandRegistry.minestom())
                 .configurationAdapter(HoconConfigurationAdapter::new)
                 .permissionSuggestions("allycraft.lobby.admin", "allycraft.lobby.gamemode", "allycraft.lobby.stop")
+                .enable();
+
+        SparkMinestom spark = SparkMinestom.builder(Path.of("spark"))
+                .permissionHandler((sender, permission) -> PermissionUtils.hasPermission(luckPerms, sender, permission))
                 .enable();
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
@@ -109,6 +113,7 @@ public class Main {
             );
         });
 
+        MinecraftServer.getSchedulerManager().buildShutdownTask(spark::disable);
         MinecraftServer.getSchedulerManager().buildShutdownTask(LuckPermsMinestom::disable);
 
         minecraftServer.start(config.host(), config.port());
