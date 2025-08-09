@@ -11,12 +11,13 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.map.LargeFramebuffer;
-import net.minestom.server.map.framebuffers.LargeGraphics2DFramebuffer;
+import net.minestom.server.map.MapColors;
+import net.minestom.server.map.framebuffers.LargeDirectFramebuffer;
 import net.minestom.server.network.packet.server.play.MapDataPacket;
 import net.minestom.server.utils.Direction;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -37,17 +38,25 @@ public class LargeMapDisplay {
     }
 
     public static LargeMapDisplay fromImage(MapIdManager idManager, Path path) {
-        Image image;
+        BufferedImage image;
         try {
             image = ImageIO.read(path.toFile());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        LargeGraphics2DFramebuffer framebuffer = new LargeGraphics2DFramebuffer(
-                image.getWidth(null),
-                image.getHeight(null)
-        );
-        framebuffer.getRenderer().drawImage(image, 0, 0, null);
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+        LargeDirectFramebuffer framebuffer = new LargeDirectFramebuffer(imageWidth, imageHeight);
+        for(int x = 0; x < imageWidth; x++) {
+            for(int y = 0; y < imageHeight; y++) {
+                int argb = image.getRGB(x, y);
+                if((argb >> 24 & 0xFF) == 0) {
+                    framebuffer.setMapColor(x, y, MapColors.NONE.baseColor());
+                } else {
+                    framebuffer.setMapColor(x, y, MapColors.closestColor(argb).getIndex());
+                }
+            }
+        }
         return new LargeMapDisplay(idManager, framebuffer);
     }
 
