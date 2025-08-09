@@ -5,11 +5,11 @@ import de.allycraft.lobby.command.StopCommand;
 import de.allycraft.lobby.config.LobbyConfig;
 import de.allycraft.lobby.modules.*;
 import de.allycraft.lobby.luckperms.HoconConfigurationAdapter;
-import de.allycraft.lobby.spark.SparkMinestom;
 import de.allycraft.lobby.utils.MapIdManager;
 import de.allycraft.lobby.utils.PermissionUtils;
 import me.lucko.luckperms.minestom.CommandRegistry;
 import me.lucko.luckperms.minestom.LuckPermsMinestom;
+import me.lucko.spark.minestom.SparkMinestom;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.luckperms.api.LuckPerms;
@@ -56,6 +56,7 @@ public class Main {
                 .enable();
 
         SparkMinestom spark = SparkMinestom.builder(Path.of("spark"))
+                .commands(true)
                 .permissionHandler((sender, permission) -> PermissionUtils.hasPermission(luckPerms, sender, permission))
                 .enable();
 
@@ -114,7 +115,7 @@ public class Main {
             );
         });
 
-        MinecraftServer.getSchedulerManager().buildShutdownTask(spark::disable);
+        MinecraftServer.getSchedulerManager().buildShutdownTask(spark::shutdown);
         MinecraftServer.getSchedulerManager().buildShutdownTask(LuckPermsMinestom::disable);
 
         minecraftServer.start(config.host(), config.port());

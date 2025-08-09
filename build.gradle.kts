@@ -19,8 +19,9 @@ java {
 
 repositories {
     mavenCentral()
-    maven("https://repo.hypera.dev/snapshots/") // LuckPerms Minestom
-    maven("https://repo.lucko.me/") // Spark
+    maven("https://repo.hypera.dev/snapshots/") // luckperms-minestom and spark-minestom
+    maven("https://repo.lucko.me/") // spark-common
+    maven("https://oss.sonatype.org/content/repositories/snapshots/") // dependencies of spark-common
 }
 
 dependencies {
@@ -38,7 +39,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.6")
 
     // Spark
-    implementation("me.lucko:spark-common:1.10.142-SNAPSHOT")
+    implementation("dev.lu15:spark-minestom:1.10-SNAPSHOT")
 }
 
 tasks {
