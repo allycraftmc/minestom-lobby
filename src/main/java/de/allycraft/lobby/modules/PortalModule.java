@@ -1,4 +1,4 @@
-package de.allycraft.lobby.hooks;
+package de.allycraft.lobby.modules;
 
 import de.allycraft.lobby.config.LobbyConfig;
 import net.kyori.adventure.text.Component;
@@ -15,13 +15,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class PortalHook {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PortalHook.class);
+public class PortalModule {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PortalModule.class);
 
     private final LobbyConfig config;
     private static final Tag<Boolean> IN_PORTAL = Tag.Boolean("in_portal");
 
-    public PortalHook(LobbyConfig config) {
+    public PortalModule(LobbyConfig config) {
         this.config = config;
     }
 

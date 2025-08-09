@@ -1,4 +1,4 @@
-package de.allycraft.lobby.hooks;
+package de.allycraft.lobby.modules;
 
 import de.allycraft.lobby.config.LobbyConfig;
 import de.allycraft.lobby.utils.LargeMapDisplay;
@@ -12,12 +12,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapDisplayHook {
+public class MapDisplayModule {
     private final List<LargeMapDisplay> maps;
 
-    public MapDisplayHook(Instance instance, List<LobbyConfig.MapConfig> mapConfigs, MapIdManager mapIdManager) {
+    public MapDisplayModule(Instance instance, List<LobbyConfig.MapImageDisplay> mapConfigs, MapIdManager mapIdManager) {
         this.maps = new ArrayList<>();
-        for(LobbyConfig.MapConfig mapConfig : mapConfigs) {
+        for(LobbyConfig.MapImageDisplay mapConfig : mapConfigs) {
             LargeMapDisplay map = LargeMapDisplay.fromImage(mapIdManager, Path.of(mapConfig.image()));
             map.spawn(instance, mapConfig.pos(), mapConfig.direction());
             this.maps.add(map);

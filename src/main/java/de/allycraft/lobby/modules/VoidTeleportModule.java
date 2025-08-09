@@ -1,4 +1,4 @@
-package de.allycraft.lobby.hooks;
+package de.allycraft.lobby.modules;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -9,11 +9,11 @@ import net.minestom.server.event.player.PlayerMoveEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.world.DimensionType;
 
-public class OutOfWorldHook {
+public class VoidTeleportModule {
     private final Pos spawnPosition;
     private final int minY;
 
-    public OutOfWorldHook(Instance instance, Pos spawnPosition) {
+    public VoidTeleportModule(Instance instance, Pos spawnPosition) {
         this.spawnPosition = spawnPosition;
         DimensionType dimensionType = MinecraftServer.getDimensionTypeRegistry().get(instance.getDimensionType());
         this.minY = dimensionType != null ? dimensionType.minY() : -64;

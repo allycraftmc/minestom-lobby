@@ -3,7 +3,7 @@ package de.allycraft.lobby;
 import de.allycraft.lobby.command.GamemodeCommand;
 import de.allycraft.lobby.command.StopCommand;
 import de.allycraft.lobby.config.LobbyConfig;
-import de.allycraft.lobby.hooks.*;
+import de.allycraft.lobby.modules.*;
 import de.allycraft.lobby.luckperms.HoconConfigurationAdapter;
 import de.allycraft.lobby.utils.LargeMapDisplay;
 import de.allycraft.lobby.utils.MapIdManager;
@@ -70,29 +70,17 @@ public class Main {
         instanceContainer.setTimeRate(0);
 
         MapIdManager mapIdManager = new MapIdManager();
-
-        for(LobbyConfig.MapConfig mapConfig : config.maps()) {
-            LargeMapDisplay map = LargeMapDisplay.fromImage(mapIdManager, Path.of(mapConfig.image()));
-            map.spawn(instanceContainer, mapConfig.pos(), mapConfig.direction());
-
-            MinecraftServer.getGlobalEventHandler().addListener(PlayerSpawnEvent.class, event -> {
-                if(event.isFirstSpawn()) {
-                    map.sendPackets(event.getPlayer());
-                }
-            });
-        }
-
         GlobalEventHandler eventHandler = MinecraftServer.getGlobalEventHandler();
 
         if(config.authMode() == LobbyConfig.AuthMode.VELOCITY) {
-            new PortalHook(config).register(eventHandler);
+            new PortalModule(config).register(eventHandler);
         } else {
             LOGGER.info("Portals are disabled in non-velocity auth modes");
         }
-        new LobbyGuardHook().register(eventHandler);
-        new GamemodeHook(luckPerms).register(eventHandler);
-        new OutOfWorldHook(instanceContainer, config.spawnPosition()).register(eventHandler);
-        new MapDisplayHook(instanceContainer, config.maps(), mapIdManager).register(eventHandler);
+        new LobbyGuardModule().register(eventHandler);
+        new GamemodeModule(luckPerms).register(eventHandler);
+        new VoidTeleportModule(instanceContainer, config.spawnPosition()).register(eventHandler);
+        new MapDisplayModule(instanceContainer, config.maps(), mapIdManager).register(eventHandler);
 
         eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
             Player player = event.getPlayer();

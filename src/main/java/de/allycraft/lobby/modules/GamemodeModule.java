@@ -1,4 +1,4 @@
-package de.allycraft.lobby.hooks;
+package de.allycraft.lobby.modules;
 
 import de.allycraft.lobby.utils.PermissionUtils;
 import net.kyori.adventure.text.Component;
@@ -12,10 +12,10 @@ import net.minestom.server.event.player.PlayerPickBlockEvent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 
-public class GamemodeHook {
+public class GamemodeModule {
     private final LuckPerms luckPerms;
 
-    public GamemodeHook(LuckPerms luckPerms) {
+    public GamemodeModule(LuckPerms luckPerms) {
         this.luckPerms = luckPerms;
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 public record LobbyConfig(
         @NotNull Pos spawnPosition,
         List<@NotNull Portal> portals,
-        List<@NotNull MapConfig> maps,
+        List<@NotNull MapImageDisplay> maps,
         @NotNull AuthMode authMode,
         @NotNull String host,
         int port
@@ -43,7 +43,7 @@ public record LobbyConfig(
                     .toList();
 
             List<Config> mapConfigs = fileConfig.getOrElse("lobby.maps", List.of());
-            List<MapConfig> maps = mapConfigs.stream()
+            List<MapImageDisplay> maps = mapConfigs.stream()
                     .map(conf -> {
                         String image = conf.get("image");
                         Pos pos = readPositionOrElse(conf, "pos", Pos.ZERO);
@@ -59,7 +59,7 @@ public record LobbyConfig(
                                 yield Direction.NORTH;
                             }
                         };
-                        return new MapConfig(image, pos, direction);
+                        return new MapImageDisplay(image, pos, direction);
                     })
                     .toList();
 
@@ -118,7 +118,7 @@ public record LobbyConfig(
         }
     }
 
-    public record MapConfig(
+    public record MapImageDisplay(
             @NotNull String image,
             @NotNull Pos pos,
             @NotNull Direction direction
