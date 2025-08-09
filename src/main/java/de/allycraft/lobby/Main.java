@@ -85,6 +85,7 @@ public class Main {
         new GamemodeModule(luckPerms).register(eventHandler);
         new VoidTeleportModule(instanceContainer, config.spawnPosition()).register(eventHandler);
         new MapDisplayModule(instanceContainer, config.maps(), mapIdManager).register(eventHandler);
+        new ChatLoggerModule().register(eventHandler);
 
         eventHandler.addListener(AsyncPlayerConfigurationEvent.class, event -> {
             Player player = event.getPlayer();
