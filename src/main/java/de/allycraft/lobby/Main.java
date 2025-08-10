@@ -4,9 +4,11 @@ import de.allycraft.lobby.command.GamemodeCommand;
 import de.allycraft.lobby.command.StopCommand;
 import de.allycraft.lobby.config.LobbyConfig;
 import de.allycraft.lobby.modules.*;
-import de.allycraft.lobby.luckperms.HoconConfigurationAdapter;
 import de.allycraft.lobby.utils.MapIdManager;
-import de.allycraft.lobby.utils.PermissionUtils;
+import de.allycraft.minestom.perms.OpPermissionProvider;
+import de.allycraft.minestom.perms.Permissions;
+import de.allycraft.minestom.perms.luckperms.HoconConfigurationAdapter;
+import de.allycraft.minestom.perms.luckperms.LuckPermsProvider;
 import me.lucko.luckperms.minestom.CommandRegistry;
 import me.lucko.luckperms.minestom.LuckPermsMinestom;
 import me.lucko.spark.minestom.SparkMinestom;
@@ -55,14 +57,17 @@ public class Main {
                 .permissionSuggestions("allycraft.lobby.admin", "allycraft.lobby.gamemode", "allycraft.lobby.stop")
                 .enable();
 
+        Permissions.registerProvider(OpPermissionProvider.fromEnvironmentVariable());
+        Permissions.registerProvider(new LuckPermsProvider(luckPerms));
+
         SparkMinestom spark = SparkMinestom.builder(Path.of("spark"))
                 .commands(true)
-                .permissionHandler((sender, permission) -> PermissionUtils.hasPermission(luckPerms, sender, permission))
+                .permissionHandler(Permissions::check)
                 .enable();
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
         commandManager.register(new GamemodeCommand());
-        commandManager.register(new StopCommand(luckPerms));
+        commandManager.register(new StopCommand());
         commandManager.setUnknownCommandCallback((sender, command) -> {
             sender.sendMessage(Component.text("Unknown command", NamedTextColor.RED));
         });
@@ -83,7 +88,7 @@ public class Main {
             LOGGER.info("Portals are disabled in non-velocity auth modes");
         }
         new LobbyGuardModule().register(eventHandler);
-        new GamemodeModule(luckPerms).register(eventHandler);
+        new GamemodeModule().register(eventHandler);
         new VoidTeleportModule(instanceContainer, config.spawnPosition()).register(eventHandler);
         new MapDisplayModule(instanceContainer, config.maps(), mapIdManager).register(eventHandler);
         new ChatLoggerModule().register(eventHandler);
@@ -94,7 +99,7 @@ public class Main {
             player.setRespawnPoint(config.spawnPosition());
             player.setGameMode(GameMode.ADVENTURE);
 
-            if(PermissionUtils.hasPermission(luckPerms, player, "allycraft.lobby.admin")) {
+            if(Permissions.check(player, "allycraft.lobby.admin")) {
                 player.setPermissionLevel(4);
             }
         });

@@ -1,19 +1,15 @@
 package de.allycraft.lobby.command;
 
-import de.allycraft.lobby.utils.PermissionUtils;
-import net.luckperms.api.LuckPerms;
+import de.allycraft.minestom.perms.Permissions;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.entity.Player;
 
 public class StopCommand extends Command {
-    private final LuckPerms luckPerms;
-
-    public StopCommand(LuckPerms luckPerms) {
+    public StopCommand() {
         super("stop");
-        this.luckPerms = luckPerms;
 
-        setCondition((sender, command) -> sender instanceof Player player && PermissionUtils.hasPermission(this.luckPerms, player, "allycraft.lobby.stop")); // TODO permission check
+        setCondition((sender, command) -> sender instanceof Player player && Permissions.check(player, "allycraft.lobby.stop"));
         setDefaultExecutor((sender, command) -> MinecraftServer.stopCleanly());
     }
 }

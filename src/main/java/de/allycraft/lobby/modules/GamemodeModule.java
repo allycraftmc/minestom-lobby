@@ -1,8 +1,7 @@
 package de.allycraft.lobby.modules;
 
-import de.allycraft.lobby.utils.PermissionUtils;
+import de.allycraft.minestom.perms.Permissions;
 import net.kyori.adventure.text.Component;
-import net.luckperms.api.LuckPerms;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
@@ -13,19 +12,13 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 
 public class GamemodeModule {
-    private final LuckPerms luckPerms;
-
-    public GamemodeModule(LuckPerms luckPerms) {
-        this.luckPerms = luckPerms;
-    }
-
     public void register(EventNode<Event> eventNode) {
         eventNode.addListener(PlayerGameModeRequestEvent.class, this::onPlayerGameModeRequest);
         eventNode.addListener(PlayerPickBlockEvent.class, this::onPlayerPickBlock);
     }
 
     private void onPlayerGameModeRequest(PlayerGameModeRequestEvent event) {
-        if(!PermissionUtils.hasPermission(this.luckPerms, event.getPlayer(), "allycraft.lobby.gamemmode")) return;
+        if(!Permissions.check(event.getPlayer(), "allycraft.lobby.gamemmode")) return;
         event.getPlayer().setGameMode(event.getRequestedGameMode());
         event.getPlayer().sendMessage(Component.text("Set own gamemmode to " + event.getRequestedGameMode()));
     }
