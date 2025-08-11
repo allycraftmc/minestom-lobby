@@ -26,10 +26,9 @@ repositories {
 }
 
 dependencies {
-    implementation("net.minestom:minestom:2025.07.30-1.21.8")
+    implementation("net.minestom:minestom:2025.08.11-1.21.8")
     implementation("org.slf4j:slf4j-simple:2.0.17")
-    implementation("net.kyori:adventure-text-serializer-ansi:4.24.0")
-    implementation("com.electronwill.night-config:toml:3.6.0")
+    implementation("com.electronwill.night-config:toml:3.8.3")
 
     implementation("de.allycraft:minestom-perms:1.0-SNAPSHOT")
 
@@ -39,10 +38,6 @@ dependencies {
 
 tasks {
     jar {
-        manifest {
-            attributes["Main-Class"] = "de.allycraft.lobby.Main"
-        }
-
         archiveVersion.set("")
     }
 
