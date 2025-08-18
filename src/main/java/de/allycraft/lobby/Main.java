@@ -15,14 +15,13 @@ import me.lucko.spark.minestom.SparkMinestom;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.luckperms.api.LuckPerms;
+import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.entity.*;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.*;
-import net.minestom.server.extras.MojangAuth;
-import net.minestom.server.extras.velocity.VelocityProxy;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.anvil.AnvilLoader;
 import org.slf4j.Logger;
@@ -34,22 +33,25 @@ public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-        MinecraftServer minecraftServer = MinecraftServer.init();
-        BlockHandlers.register(MinecraftServer.getBlockManager());
-
         LobbyConfig config = LobbyConfig.read();
 
-        switch (config.authMode()) {
-            case OFFLINE -> LOGGER.warn("Offline Mode is enabled. DO NOT USE IN PRODUCTION ENVIRONMENTS");
-            case ONLINE -> MojangAuth.init();
+        Auth auth = switch (config.authMode()) {
+            case OFFLINE -> {
+                LOGGER.warn("Offline Mode is enabled. DO NOT USE IN PRODUCTION ENVIRONMENTS");
+                yield new Auth.Offline();
+            }
+            case ONLINE -> new Auth.Online();
             case VELOCITY -> {
                 String velocitySecret = System.getenv("VELOCITY_SECRET");
                 if(velocitySecret == null || velocitySecret.isEmpty()) {
                     throw new RuntimeException("VELOCITY_SECRET environment variable must be set");
                 }
-                VelocityProxy.enable(velocitySecret);
+                yield new Auth.Velocity(velocitySecret);
             }
-        }
+        };
+
+        MinecraftServer minecraftServer = MinecraftServer.init(auth);
+        BlockHandlers.register(MinecraftServer.getBlockManager());
 
         LuckPerms luckPerms = LuckPermsMinestom.builder(Path.of("luckperms"))
                 .commandRegistry(CommandRegistry.minestom())
