@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.minestom:minestom:2025.08.18-1.21.8")
+    implementation("net.minestom:minestom:2025.08.26-1.21.8")
     implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation("com.electronwill.night-config:toml:3.8.3")
 
