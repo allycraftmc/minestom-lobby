@@ -1,10 +1,10 @@
-FROM gradle:8.13.0-alpine AS builder
+FROM gradle:9.1.0-alpine AS builder
 
 COPY . .
 
 RUN gradle build
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 RUN mkdir /opt/app
 

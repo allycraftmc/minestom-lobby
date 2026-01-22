@@ -13,7 +13,7 @@ application {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -26,14 +26,14 @@ repositories {
 }
 
 dependencies {
-    implementation("net.minestom:minestom:2025.08.26-1.21.8")
+    implementation("net.minestom:minestom:2026.01.08-1.21.11")
     implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation("com.electronwill.night-config:toml:3.8.3")
 
     implementation("de.allycraft:minestom-perms:1.0-SNAPSHOT")
 
     // Spark
-    implementation("dev.lu15:spark-minestom:1.10-SNAPSHOT")
+    // implementation("dev.lu15:spark-minestom:1.10-SNAPSHOT")
 }
 
 tasks {
